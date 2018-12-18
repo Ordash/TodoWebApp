@@ -13,7 +13,7 @@
     <a th:href="@{/todo/?isActive=true}">Active todos</a>
 </div>
 <div>
-    <form th:action="@{todo}" method="post">
+    <form th:action="@{list}" method="get">
         <input type="text" name="search" placeholder="search"/>
         <button type="submit">Search</button>
     </form>
@@ -31,7 +31,7 @@
     <tbody>
     <tr th:each="todo : ${todos}" th:object="${todo}">
         <td th:text="*{id}"></td>
-        <td><a th:href="@{|/todo/?desc=${todo.id}|}" th:text="*{title}" ></a></td>
+        <td><a th:href="@{|/todo/?desc=${todo.id}&search=${searchstring}|}" th:text="*{title}" ></a></td>
         <td th:text="*{done}"></td>
         <td th:text="*{urgent}"></td>
         <td th:text="*{date}"></td>

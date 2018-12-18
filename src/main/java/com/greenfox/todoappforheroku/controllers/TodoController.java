@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
 @Controller
 @RequestMapping("/todo")
 public class TodoController {
@@ -22,14 +23,23 @@ public class TodoController {
 
     @GetMapping(value = { "","/","/list" })
     public String list(Model model, @RequestParam(value="isActive", required = false)Boolean isDone,
-                                    @RequestParam(value="desc", required = false)Long id){
-        if(id != null) {
+                                    @RequestParam(value="desc", required = false)Long id,
+                                    @RequestParam(value = "search", required = false) String search) {
+        
+        model.addAttribute("searchstring", search);
+        if(id != null && todoRepository.findById(id).isPresent()) {
             model.addAttribute("desc", todoRepository.findById(id).get());
+        }
+        if(search != null) {
+            model.addAttribute("todos", todoRepository.findAllByTitleContains(search));
+            return "todolist";
         }
         if(isDone != null && isDone){
             model.addAttribute("todos",todoRepository.findByDone(!isDone));
+            System.out.println("active");
         } else {
             model.addAttribute("todos", todoRepository.findAll());
+            System.out.println("all");
         }
         return "todolist";
     }
@@ -67,7 +77,7 @@ public class TodoController {
     public String editTodoPost(@ModelAttribute("editTodo") Todo todo) {
         todoRepository.save(todo);
         return "redirect:/todo/list";
-
     }
+
 
 }
