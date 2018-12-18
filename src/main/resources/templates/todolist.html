@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<body>
+<h1 onclick="location.href='/todo/list'">Todos for today</h1>
+<div>
+    <a th:href="@{/todo/add}">Add new todo</a>
+    <a th:href="@{/todo/?isActive=true}">Active todos</a>
+
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Action</th>
+        <th>Done</th>
+        <th>Urgent</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="todo : ${todos}" th:object="${todo}">
+        <td th:text="*{id}"></td>
+        <td><a th:href="@{|/todo/?desc=${todo.id}|}" th:text="*{title}" ></a></td>
+        <td th:text="*{done}"></td>
+        <td th:text="*{urgent}"></td>
+        <td th:text="*{date}"></td>
+
+        <td><a th:href="@{|${todo.id}/delete|}">delete</a></td>
+
+        <td><a th:href="@{|${todo.id}/edit|}">edit</a></td>
+
+    </tr>
+    </tbody>
+</table>
+<div class=" description" th:if="${desc} != null">
+    <h1>Description</h1>
+    <p th:text="${desc.description}"></p>
+</div>
+
+</body>
+</html>

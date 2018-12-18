@@ -1,0 +1,12 @@
+h1{
+    text-transform: uppercase;
+}
+
+th{
+    text-transform: uppercase;
+}
+
+td {
+    border: 1px solid black;
+}
+
