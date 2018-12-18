@@ -25,13 +25,27 @@ public class TodoController {
     public String list(Model model, @RequestParam(value="isActive", required = false)Boolean isDone,
                                     @RequestParam(value="desc", required = false)Long id,
                                     @RequestParam(value = "search", required = false) String search) {
-        
+
+
         model.addAttribute("searchstring", search);
+
+        if(id != null && search.equals("null") && todoRepository.findById(id).isPresent()) {
+            model.addAttribute("desc", todoRepository.findById(id).get());
+            model.addAttribute("todos", todoRepository.findAll());
+            System.out.println("descnullsearch");
+            return "todolist";
+        }
+
         if(id != null && todoRepository.findById(id).isPresent()) {
             model.addAttribute("desc", todoRepository.findById(id).get());
+            model.addAttribute("todos", todoRepository.findAllByTitleContains(search));
+            System.out.println("descnsearch");
+            return "todolist";
         }
+
         if(search != null) {
             model.addAttribute("todos", todoRepository.findAllByTitleContains(search));
+            System.out.println("search");
             return "todolist";
         }
         if(isDone != null && isDone){
