@@ -11,7 +11,12 @@
 <div>
     <a th:href="@{/todo/add}">Add new todo</a>
     <a th:href="@{/todo/?isActive=true}">Active todos</a>
-
+</div>
+<div>
+    <form th:action="@{todo}" method="post">
+        <input type="text" name="search" placeholder="search"/>
+        <button type="submit">Search</button>
+    </form>
 </div>
 <table>
     <thead>
