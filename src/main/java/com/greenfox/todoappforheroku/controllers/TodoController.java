@@ -1,5 +1,6 @@
 package com.greenfox.todoappforheroku.controllers;
 
+import com.greenfox.todoappforheroku.repositories.AssigneeRepository;
 import com.greenfox.todoappforheroku.repositories.TodoRepository;
 import com.greenfox.todoappforheroku.repositories.entities.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/todo")
 public class TodoController {
 
-    @Autowired
-    private TodoRepository todoRepository;
+    private final TodoRepository todoRepository;
+    private final AssigneeRepository assigneeRepository;
 
     @Autowired
-    public TodoController(TodoRepository todoRepository) {
+    public TodoController(TodoRepository todoRepository, AssigneeRepository assigneeRepository) {
         this.todoRepository = todoRepository;
+        this.assigneeRepository = assigneeRepository;
     }
 
 
@@ -31,20 +33,22 @@ public class TodoController {
 
         if(id != null && search.equals("null") && todoRepository.findById(id).isPresent()) {
             model.addAttribute("desc", todoRepository.findById(id).get());
-            model.addAttribute("todos", todoRepository.findAll());
+            model.addAttribute("todos", todoRepository.findAllByOrderByDateDesc());
             System.out.println("descnullsearch");
+
+
             return "todolist";
         }
 
         if(id != null && todoRepository.findById(id).isPresent()) {
             model.addAttribute("desc", todoRepository.findById(id).get());
-            model.addAttribute("todos", todoRepository.findAllByTitleContains(search));
+            model.addAttribute("todos", todoRepository.findAllByTitleContainsOrDescriptionContains(search,search));
             System.out.println("descnsearch");
             return "todolist";
         }
 
         if(search != null) {
-            model.addAttribute("todos", todoRepository.findAllByTitleContains(search));
+            model.addAttribute("todos", todoRepository.findAllByTitleContainsOrDescriptionContains(search,search));
             System.out.println("search");
             return "todolist";
         }
@@ -52,7 +56,7 @@ public class TodoController {
             model.addAttribute("todos",todoRepository.findByDone(!isDone));
             System.out.println("active");
         } else {
-            model.addAttribute("todos", todoRepository.findAll());
+            model.addAttribute("todos", todoRepository.findAllByOrderByDateDesc());
             System.out.println("all");
         }
         return "todolist";
@@ -60,12 +64,14 @@ public class TodoController {
 
     @GetMapping(value = "/add")
     public String addTodo(Model model){
+        model.addAttribute("assigneess", assigneeRepository.findAll());
         model.addAttribute("newtodo", new Todo());
         return "add";
     }
 
     @PostMapping(value = "/add")
-    public String addTodoPost(@ModelAttribute Todo todo) {
+    public String addTodoPost(@ModelAttribute Todo todo,@ModelAttribute("assige")String name) {
+        todo.setAssignee(assigneeRepository.findByName(name));
         todoRepository.save(todo);
         return "redirect:/todo/list";
 
@@ -81,6 +87,7 @@ public class TodoController {
 
     @GetMapping(value = "{id}/edit")
     public String editTodo(Model model, @PathVariable Long id) {
+        model.addAttribute("assignees", assigneeRepository.findAll());
         if(todoRepository.findById(id).isPresent()) {
             model.addAttribute("editTodo", todoRepository.findById(id).get());
         }
@@ -88,7 +95,8 @@ public class TodoController {
     }
 
     @PostMapping(value = "{id}/edit")
-    public String editTodoPost(@ModelAttribute("editTodo") Todo todo) {
+    public String editTodoPost(@ModelAttribute("editTodo") Todo todo,@ModelAttribute("assig")String name) {
+        todo.setAssignee(assigneeRepository.findByName(name));
         todoRepository.save(todo);
         return "redirect:/todo/list";
     }

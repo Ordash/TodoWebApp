@@ -15,6 +15,10 @@
     <input type="text" id="adddesc" th:field="*{description}"/>
     <label>Urgent</label>
     <input type="checkbox" th:field="*{urgent}"/>
+    <label>Assignee</label>
+    <select name="assige">
+        <option th:each="assignee : ${assigneess}" th:text="${assignee.name}"></option>
+    </select>
     <button type="submit">Add</button>
 </form>
 </body>

@@ -1,12 +1,12 @@
 package com.greenfox.todoappforheroku.repositories.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name="todos")
 public class Todo {
 
     @Id
@@ -15,8 +15,12 @@ public class Todo {
     private String title;
     private Boolean urgent;
     private Boolean done;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private String description;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "assignee_id")
+    protected Assignee assignee;
 
     public Todo() {
         urgent = false;
@@ -35,6 +39,14 @@ public class Todo {
         this.urgent = urgent;
         this.done = done;
         date = new Date();
+    }
+
+    public Assignee getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(Assignee assignee) {
+        this.assignee = assignee;
     }
 
     public String getDescription() {

@@ -11,9 +11,11 @@
 <div>
     <a th:href="@{/todo/add}">Add new todo</a>
     <a th:href="@{/todo/?isActive=true}">Active todos</a>
+    <a th:href="@{/assignee/list}">Assignees</a>
+
 </div>
 <div>
-    <form th:action="@{list}" method="get">
+    <form th:action="@{/todo/list}" method="get">
         <input type="text" name="search" placeholder="search"/>
         <button type="submit">Search</button>
     </form>
@@ -25,6 +27,8 @@
         <th>Action</th>
         <th>Done</th>
         <th>Urgent</th>
+        <th>Date</th>
+        <th>Assignee</th>
 
     </tr>
     </thead>
@@ -35,10 +39,11 @@
         <td th:text="*{done}"></td>
         <td th:text="*{urgent}"></td>
         <td th:text="*{date}"></td>
+        <td th:text="*{assignee != null} ? *{assignee.name} : 'Not assigned'"></td>
 
-        <td><a th:href="@{|${todo.id}/delete|}">delete</a></td>
+        <td><a th:href="@{|/todo/${todo.id}/delete|}">delete</a></td>
 
-        <td><a th:href="@{|${todo.id}/edit|}">edit</a></td>
+        <td><a th:href="@{|/todo/${todo.id}/edit|}">edit</a></td>
 
     </tr>
     </tbody>

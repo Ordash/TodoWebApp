@@ -1,6 +1,8 @@
 package com.greenfox.todoappforheroku;
 
+import com.greenfox.todoappforheroku.repositories.AssigneeRepository;
 import com.greenfox.todoappforheroku.repositories.TodoRepository;
+import com.greenfox.todoappforheroku.repositories.entities.Assignee;
 import com.greenfox.todoappforheroku.repositories.entities.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +14,9 @@ public class TodoappforherokuApplication implements CommandLineRunner {
 
     @Autowired
     private TodoRepository todoRepository;
+
+    @Autowired
+    private AssigneeRepository assigneeRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(TodoappforherokuApplication.class, args);
@@ -25,6 +30,10 @@ public class TodoappforherokuApplication implements CommandLineRunner {
         todoRepository.save(new Todo("Find medicine for cancer", true, false));
         todoRepository.save(new Todo("Cook steak", true, false));
         todoRepository.save(new Todo("Find the meaning of life", false, true));
+        assigneeRepository.save(new Assignee("john", "john@valami.com"));
+        assigneeRepository.save(new Assignee("sanya", "jdfd@valami.com"));
+        assigneeRepository.save(new Assignee("bela", "jgdgdfn@valami.com"));
+
     }
 }
 

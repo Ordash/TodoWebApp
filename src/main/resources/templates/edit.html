@@ -17,7 +17,12 @@
     <input type="checkbox" th:field="*{urgent}"/>
     <label>Done</label>
     <input type="checkbox" th:field="*{done}"/>
+    <label>Assignee</label>
+    <select name="assig">
+        <option th:each="assignee : ${assignees}" th:text="${assignee.name}"></option>
+    </select>
     <input type="submit" th:value="Update">
+
 </form>
 </body>
 </html>
