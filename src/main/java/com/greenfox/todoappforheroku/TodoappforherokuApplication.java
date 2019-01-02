@@ -12,11 +12,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TodoappforherokuApplication implements CommandLineRunner {
 
-    @Autowired
-    private TodoRepository todoRepository;
+    private final TodoRepository todoRepository;
+    private final AssigneeRepository assigneeRepository;
 
     @Autowired
-    private AssigneeRepository assigneeRepository;
+    public TodoappforherokuApplication(TodoRepository todoRepository, AssigneeRepository assigneeRepository) {
+        this.todoRepository = todoRepository;
+        this.assigneeRepository = assigneeRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(TodoappforherokuApplication.class, args);

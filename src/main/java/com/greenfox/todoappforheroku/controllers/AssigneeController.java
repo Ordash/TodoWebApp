@@ -3,6 +3,7 @@ package com.greenfox.todoappforheroku.controllers;
 import com.greenfox.todoappforheroku.repositories.AssigneeRepository;
 import com.greenfox.todoappforheroku.repositories.TodoRepository;
 import com.greenfox.todoappforheroku.repositories.entities.Assignee;
+import com.greenfox.todoappforheroku.services.SetNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,17 +13,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/assignee")
 public class AssigneeController {
 
+    private final SetNull setNull;
     private final AssigneeRepository assigneeRepository;
-    private final TodoRepository todoRepository;
 
     @Autowired
-    public AssigneeController(AssigneeRepository assigneeRepository, TodoRepository todoRepository) {
+    public AssigneeController(AssigneeRepository assigneeRepository, SetNull setNull) {
+        this.setNull = setNull;
         this.assigneeRepository = assigneeRepository;
-        this.todoRepository = todoRepository;
     }
 
     @GetMapping({"/", "", "/list"})
-    public String listAssignees(Model model) {
+    public String listAssignees(Model model, @RequestParam(value = "todos", required = false) Long id) {
+        if(id != null && assigneeRepository.findById(id).isPresent()) {
+            model.addAttribute("todos", assigneeRepository.findById(id).get());
+        }
         model.addAttribute("allassignee", assigneeRepository.findAll());
         return "assignees";
     }
@@ -57,7 +61,7 @@ public class AssigneeController {
 
     @GetMapping(value = "{id}/delete")
     public String deleteTodo(@PathVariable Long id) {
-        todoRepository.findAllByAssignee_Id(id).forEach(todo -> todo.setAssignee(null));
+        setNull.TodoAssigneeId(id);
         if (assigneeRepository.findById(id).isPresent()) {
             assigneeRepository.delete(assigneeRepository.findById(id).get());
         }

@@ -20,7 +20,7 @@ public class Todo {
     private String description;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assignee_id")
-    protected Assignee assignee;
+    private Assignee assignee;
 
     public Todo() {
         urgent = false;
